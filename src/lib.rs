@@ -69,6 +69,11 @@ pub trait ProxyExt<T>: Sized {
 #[macro_export]
 macro_rules! proxy {
     () => {
+        proxy! { Proxy }
+    };
+    ($t:ident) => {
+        // TODO: Do not import items. This causes conflicts with imports in the
+        //       code that invokes the macro.
         use num_traits::{FromPrimitive, Num, NumCast, One, Signed, ToPrimitive, Unsigned, Zero};
         use std::marker::PhantomData;
         use std::ops::{
@@ -78,7 +83,7 @@ macro_rules! proxy {
         use $crate::*;
 
         #[repr(transparent)]
-        pub struct Proxy<K, T, C>
+        pub struct $t<K, T, C>
         where
             C: Constraint<K, T>,
         {
@@ -86,7 +91,7 @@ macro_rules! proxy {
             phantom: PhantomData<(K, C)>,
         }
 
-        impl<K, T, C> Proxy<K, T, C>
+        impl<K, T, C> $t<K, T, C>
         where
             C: Constraint<K, T>,
         {
@@ -95,7 +100,7 @@ macro_rules! proxy {
             }
         }
 
-        impl<K, T, C> Add for Proxy<K, T, C>
+        impl<K, T, C> Add for $t<K, T, C>
         where
             T: Add<Output = T>,
             C: Constraint<K, T>,
@@ -107,7 +112,7 @@ macro_rules! proxy {
             }
         }
 
-        impl<K, T, C> Add<T> for Proxy<K, T, C>
+        impl<K, T, C> Add<T> for $t<K, T, C>
         where
             T: Add<Output = T>,
             C: Constraint<K, T>,
@@ -119,7 +124,7 @@ macro_rules! proxy {
             }
         }
 
-        impl<K, T, C> AddAssign for Proxy<K, T, C>
+        impl<K, T, C> AddAssign for $t<K, T, C>
         where
             Self: Clone,
             T: Add<Output = T>,
@@ -130,7 +135,7 @@ macro_rules! proxy {
             }
         }
 
-        impl<K, T, C> AddAssign<T> for Proxy<K, T, C>
+        impl<K, T, C> AddAssign<T> for $t<K, T, C>
         where
             Self: Clone,
             T: Add<Output = T>,
@@ -141,7 +146,7 @@ macro_rules! proxy {
             }
         }
 
-        impl<K, T, C> AsRef<T> for Proxy<K, T, C>
+        impl<K, T, C> AsRef<T> for $t<K, T, C>
         where
             C: Constraint<K, T>,
         {
@@ -150,7 +155,7 @@ macro_rules! proxy {
             }
         }
 
-        impl<K, T, C> Clone for Proxy<K, T, C>
+        impl<K, T, C> Clone for $t<K, T, C>
         where
             T: Clone,
             C: Constraint<K, T>,
@@ -160,14 +165,14 @@ macro_rules! proxy {
             }
         }
 
-        impl<K, T, C> Copy for Proxy<K, T, C>
+        impl<K, T, C> Copy for $t<K, T, C>
         where
             T: Copy,
             C: Constraint<K, T>,
         {
         }
 
-        impl<K, T, C> Div for Proxy<K, T, C>
+        impl<K, T, C> Div for $t<K, T, C>
         where
             T: Div<Output = T>,
             C: Constraint<K, T>,
@@ -179,7 +184,7 @@ macro_rules! proxy {
             }
         }
 
-        impl<K, T, C> Div<T> for Proxy<K, T, C>
+        impl<K, T, C> Div<T> for $t<K, T, C>
         where
             T: Div<Output = T>,
             C: Constraint<K, T>,
@@ -191,7 +196,7 @@ macro_rules! proxy {
             }
         }
 
-        impl<K, T, C> DivAssign for Proxy<K, T, C>
+        impl<K, T, C> DivAssign for $t<K, T, C>
         where
             Self: Clone,
             T: Div<Output = T>,
@@ -202,7 +207,7 @@ macro_rules! proxy {
             }
         }
 
-        impl<K, T, C> DivAssign<T> for Proxy<K, T, C>
+        impl<K, T, C> DivAssign<T> for $t<K, T, C>
         where
             Self: Clone,
             T: Div<Output = T>,
@@ -213,19 +218,19 @@ macro_rules! proxy {
             }
         }
 
-        impl<K, T, C> From<T> for Proxy<K, T, C>
+        impl<K, T, C> From<T> for $t<K, T, C>
         where
             C: Constraint<K, T>,
         {
             fn from(inner: T) -> Self {
-                Proxy {
+                $t {
                     inner: C::map(inner).expect("proxy constraint violated"),
                     phantom: PhantomData,
                 }
             }
         }
 
-        impl<K, T, C> FromPrimitive for Proxy<K, T, C>
+        impl<K, T, C> FromPrimitive for $t<K, T, C>
         where
             C: Constraint<K, T>,
             T: FromPrimitive,
@@ -239,7 +244,7 @@ macro_rules! proxy {
             }
         }
 
-        impl<K, T, C> IntoPrimitive for Proxy<K, T, C>
+        impl<K, T, C> IntoPrimitive for $t<K, T, C>
         where
             T: IntoPrimitive,
             C: Constraint<K, T>,
@@ -251,7 +256,7 @@ macro_rules! proxy {
             }
         }
 
-        impl<K, T, C> Mul for Proxy<K, T, C>
+        impl<K, T, C> Mul for $t<K, T, C>
         where
             T: Mul<Output = T>,
             C: Constraint<K, T>,
@@ -263,7 +268,7 @@ macro_rules! proxy {
             }
         }
 
-        impl<K, T, C> Mul<T> for Proxy<K, T, C>
+        impl<K, T, C> Mul<T> for $t<K, T, C>
         where
             T: Mul<Output = T>,
             C: Constraint<K, T>,
@@ -275,7 +280,7 @@ macro_rules! proxy {
             }
         }
 
-        impl<K, T, C> MulAssign for Proxy<K, T, C>
+        impl<K, T, C> MulAssign for $t<K, T, C>
         where
             Self: Clone,
             T: Mul<Output = T>,
@@ -286,7 +291,7 @@ macro_rules! proxy {
             }
         }
 
-        impl<K, T, C> MulAssign<T> for Proxy<K, T, C>
+        impl<K, T, C> MulAssign<T> for $t<K, T, C>
         where
             Self: Clone,
             T: Mul<Output = T>,
@@ -297,7 +302,7 @@ macro_rules! proxy {
             }
         }
 
-        impl<K, T, C> Neg for Proxy<K, T, C>
+        impl<K, T, C> Neg for $t<K, T, C>
         where
             T: Neg<Output = T>,
             C: Constraint<K, T> + Member<NegativeSet>,
@@ -309,7 +314,7 @@ macro_rules! proxy {
             }
         }
 
-        impl<K, T, C> Num for Proxy<K, T, C>
+        impl<K, T, C> Num for $t<K, T, C>
         where
             Self: PartialEq,
             T: Num,
@@ -322,7 +327,7 @@ macro_rules! proxy {
             }
         }
 
-        impl<K, T, C> NumCast for Proxy<K, T, C>
+        impl<K, T, C> NumCast for $t<K, T, C>
         where
             C: Constraint<K, T>,
             T: NumCast,
@@ -335,7 +340,7 @@ macro_rules! proxy {
             }
         }
 
-        impl<K, T, C> One for Proxy<K, T, C>
+        impl<K, T, C> One for $t<K, T, C>
         where
             T: One,
             C: Constraint<K, T> + Member<OneSet>,
@@ -345,12 +350,12 @@ macro_rules! proxy {
             }
         }
 
-        impl<K, T, C> ProxyExt<T> for Proxy<K, T, C>
+        impl<K, T, C> ProxyExt<T> for $t<K, T, C>
         where
             C: Constraint<K, T>,
         {
             fn from_inner_unchecked(inner: T) -> Self {
-                Proxy {
+                $t {
                     inner,
                     phantom: PhantomData,
                 }
@@ -375,7 +380,7 @@ macro_rules! proxy {
             }
         }
 
-        impl<K, T, C> Rem for Proxy<K, T, C>
+        impl<K, T, C> Rem for $t<K, T, C>
         where
             T: Rem<Output = T>,
             C: Constraint<K, T>,
@@ -387,7 +392,7 @@ macro_rules! proxy {
             }
         }
 
-        impl<K, T, C> Rem<T> for Proxy<K, T, C>
+        impl<K, T, C> Rem<T> for $t<K, T, C>
         where
             T: Rem<Output = T>,
             C: Constraint<K, T>,
@@ -399,7 +404,7 @@ macro_rules! proxy {
             }
         }
 
-        impl<K, T, C> RemAssign for Proxy<K, T, C>
+        impl<K, T, C> RemAssign for $t<K, T, C>
         where
             Self: Clone,
             T: Rem<Output = T>,
@@ -410,7 +415,7 @@ macro_rules! proxy {
             }
         }
 
-        impl<K, T, C> RemAssign<T> for Proxy<K, T, C>
+        impl<K, T, C> RemAssign<T> for $t<K, T, C>
         where
             Self: Clone,
             T: Rem<Output = T>,
@@ -423,7 +428,7 @@ macro_rules! proxy {
 
         // TODO: This requires `Copy`, because of the use of `map` and `zip_map`.
         //       Consider a reference variant of these functions.
-        impl<K, T, C> Signed for Proxy<K, T, C>
+        impl<K, T, C> Signed for $t<K, T, C>
         where
             Self: Copy + PartialEq,
             T: Num + Signed,
@@ -450,7 +455,7 @@ macro_rules! proxy {
             }
         }
 
-        impl<K, T, C> Sub for Proxy<K, T, C>
+        impl<K, T, C> Sub for $t<K, T, C>
         where
             T: Sub<Output = T>,
             C: Constraint<K, T>,
@@ -462,7 +467,7 @@ macro_rules! proxy {
             }
         }
 
-        impl<K, T, C> Sub<T> for Proxy<K, T, C>
+        impl<K, T, C> Sub<T> for $t<K, T, C>
         where
             T: Sub<Output = T>,
             C: Constraint<K, T>,
@@ -474,7 +479,7 @@ macro_rules! proxy {
             }
         }
 
-        impl<K, T, C> SubAssign for Proxy<K, T, C>
+        impl<K, T, C> SubAssign for $t<K, T, C>
         where
             Self: Clone,
             T: Sub<Output = T>,
@@ -485,7 +490,7 @@ macro_rules! proxy {
             }
         }
 
-        impl<K, T, C> SubAssign<T> for Proxy<K, T, C>
+        impl<K, T, C> SubAssign<T> for $t<K, T, C>
         where
             Self: Clone,
             T: Sub<Output = T>,
@@ -496,7 +501,7 @@ macro_rules! proxy {
             }
         }
 
-        impl<K, T, C> ToPrimitive for Proxy<K, T, C>
+        impl<K, T, C> ToPrimitive for $t<K, T, C>
         where
             C: Constraint<K, T>,
             T: ToPrimitive,
@@ -510,7 +515,7 @@ macro_rules! proxy {
             }
         }
 
-        impl<K, T, C> Unsigned for Proxy<K, T, C>
+        impl<K, T, C> Unsigned for $t<K, T, C>
         where
             Self: PartialEq,
             T: Unsigned,
@@ -518,7 +523,7 @@ macro_rules! proxy {
         {
         }
 
-        impl<K, T, C> Zero for Proxy<K, T, C>
+        impl<K, T, C> Zero for $t<K, T, C>
         where
             T: Zero,
             C: Constraint<K, T> + Member<ZeroSet>,
@@ -536,5 +541,5 @@ macro_rules! proxy {
 
 #[cfg(test)]
 mod tests {
-    proxy!{}
+    proxy! { Proxy }
 }
